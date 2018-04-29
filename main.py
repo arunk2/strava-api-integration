@@ -11,16 +11,18 @@ def login():
 	client = Client()
 	authorize_url = client.authorization_url(client_id=CONSTANTS.CLIENT_ID, 
 											redirect_uri=CONSTANTS.CALLBACK_URL)
-	# Have the user click the authorization URL, a 'code' param will be added to the redirect_uris
+	# Have the user click the authorization URL, 
+	# a 'code' param will be added to the redirect_uris
 	return jsonify({"message": "success", "url": authorize_url})
 
 
 def authorized_callback():
 	client = Client()
 	# Extract the code from your webapp response
-	code = request.args.get('code') # or whatever your framework does
+	code = request.args.get('code')
 	access_token = client.exchange_code_for_token(client_id=CONSTANTS.CLIENT_ID, 
-												client_secret=CONSTANTS.CLIENT_SECRET, code=code)
+												client_secret=CONSTANTS.CLIENT_SECRET, 
+												code=code)
 
 	# Now store that access token along with athlete details
 	print(access_token)
@@ -41,13 +43,16 @@ def add_athlete(access_token):
 	client.access_token = access_token
 	athlete = client.get_athlete()
 
-	print("For {id}, I now have an access token {token}".format(id=athlete.id, token=access_token))
-	print(dir(athlete))
-	print(athlete.to_dict())
-	# add_athlte(athlete)
-
-	# for activity in client.get_activities(after = "2010-01-01T00:00:00Z",  limit=2):
-	# 	process_activity(activity)
+	ath = {}
+	ath['id'] = athlete.id
+	ath['firstname'] = athlete.firstname
+	ath['lastname'] = athlete.lastname
+	ath['sex'] = athlete.sex
+	ath['email'] = athlete.email
+	ath['profile'] = athlete.profile
+	ath['username'] = athlete.username
+	ath['access_token'] = access_token
+	# add_athlte(ath)
 
 	get_activities(access_token)
 
