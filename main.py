@@ -29,6 +29,10 @@ def authorized_callback():
 	return jsonify({"message": "success"})
 
 
+def dump_activities():
+	return jsonify({"message": "success"})
+
+
 def add_athlete(access_token):
 	# An authorized callback is coming. Process it and add 
 	client = Client()
