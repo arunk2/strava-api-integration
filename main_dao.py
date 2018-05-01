@@ -1,14 +1,15 @@
 #!/usr/bin/python
 
 import MySQLdb
+import CONSTANTS
 
 
 class MainDAO():
 	def __init__(self):
 		self.host = CONSTANTS.DB_HOST
 		self.user = CONSTANTS.DB_USER
-		self.password = DB_PASS
-		self.database = DB_DATABASE
+		self.password = CONSTANTS.DB_PASS
+		self.database = CONSTANTS.DB_DATABASE
 
 	def create_database(self):
 		# Open database connection
@@ -32,10 +33,11 @@ class MainDAO():
 					)"""
 
 		cursor.execute(sql)
+		cursor.execute("DROP TABLE IF EXISTS ACTIVITIES")
 
 		sql = """CREATE TABLE ACTIVITIES (
 					id INT(11) NOT NULL,
-					athlete_id  VARCHAR(50),
+					athlete_id  INT(11),
 					athlete_firstname VARCHAR(50),
 					athlete_lastname  VARCHAR(50),
 					title  VARCHAR(50),
