@@ -34,9 +34,9 @@ def authorized_callback():
 	return jsonify({"status": "success"})
 
 
-def get_athlete():
+def get_athletes():
 	dao = MainDAO()
-	result = dao.get_athlete()
+	result = dao.get_athletes()
 	return jsonify({"status": "success", "athletes": result})
 
 
@@ -47,6 +47,7 @@ def get_activities():
 
 
 def dump_activities():
+	# pull_activities(access_token, from_time)
 	return jsonify({"status": "success"})
 
 
@@ -88,7 +89,7 @@ def extract_athlete(athlete):
 	return ath
 
 
-def get_activities(access_token, from_time = "2018-01-01T00:00:00Z"):
+def pull_activities(access_token, from_time = "2018-01-01T00:00:00Z"):
 	# An authorized callback is coming. Process it and add 
 	client = Client()
 	client.access_token = access_token
@@ -140,7 +141,7 @@ app.add_url_rule(rule='/authorized', endpoint='authorized-callback', view_func=a
 app.add_url_rule(rule='/dump_activities', endpoint='dump-activities', view_func=dump_activities, methods=['GET'])
 app.add_url_rule(rule='/create_db', endpoint='create_db', view_func=create_db, methods=['GET'])
 
-app.add_url_rule(rule='/athlete', endpoint='get-athlete', view_func=get_athlete, methods=['GET'])
+app.add_url_rule(rule='/athletes', endpoint='get-athletes', view_func=get_athletes, methods=['GET'])
 app.add_url_rule(rule='/activities', endpoint='get-activities', view_func=get_activities, methods=['GET'])
 
 

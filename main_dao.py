@@ -154,7 +154,7 @@ class MainDAO():
 				athletes.append(athlete)
 
 		except:
-			print "Error: unable to fecth data"
+			print("Error: unable to fecth data")
 
 		# disconnect from server
 		db.close()
@@ -195,7 +195,7 @@ class MainDAO():
 				athletes.append(activity)
 
 		except:
-			print "Error: unable to fecth data"
+			print("Error: unable to fecth data")
 
 		# disconnect from server
 		db.close()
