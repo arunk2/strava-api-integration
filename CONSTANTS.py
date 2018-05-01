@@ -1,7 +1,7 @@
 DB_HOST = 'localhost'
-DB_USER = ''
-DB_PASS = ''
-DB_DATABASE= 'TTB'
+DB_USER = 'root'
+DB_PASS = 'ttb'
+DB_DATABASE= 'ttb'
 
 CALLBACK_URL	= 'http://localhost:8082/authorized'
 CLIENT_ID		= 25184

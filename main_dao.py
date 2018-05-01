@@ -10,7 +10,7 @@ class MainDAO():
 		self.password = DB_PASS
 		self.database = DB_DATABASE
 
-	def create_databasae(self):
+	def create_database(self):
 		# Open database connection
 		db = MySQLdb.connect(self.host, self.user, self.password, self.database)
 		# prepare a cursor object using cursor() method
@@ -55,7 +55,7 @@ class MainDAO():
 		db.close()
 
 
-	def add_user(user):
+	def add_athlete(user):
 		return None
 
 	def add_activity():
