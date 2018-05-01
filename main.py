@@ -35,11 +35,15 @@ def authorized_callback():
 
 
 def get_athlete():
-	return jsonify({"status": "success"})
+	dao = MainDAO()
+	result = dao.get_athlete()
+	return jsonify({"status": "success", "athletes": result})
 
 
 def get_activities():
-	return jsonify({"status": "success"})
+	dao = MainDAO()
+	result = dao.get_activities()
+	return jsonify({"status": "success", "athletes": result})
 
 
 def dump_activities():
