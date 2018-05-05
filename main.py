@@ -75,7 +75,7 @@ def add_athlete(access_token):
 	dao.add_athlete(ath)
 	from datetime import datetime
 	today = datetime.now()
-	pull_activities(access_token, ath['firstname'], ath['lastname'], my_datetime.strftime("%Y-%B-%d"))
+	pull_activities(access_token, ath['firstname'], ath['lastname'], today.strftime("%Y-%B-%d")+'T00:00:00Z')
 	return True
 
 
@@ -95,7 +95,7 @@ def extract_athlete(athlete):
 	return ath
 
 
-def pull_activities(access_token, firstname, lastname, from_time = "2018-01-01"):
+def pull_activities(access_token, firstname, lastname, from_time = "2018-01-01T00:00:00Z"):
 	# An authorized callback is coming. Process it and add 
 	client = Client()
 	client.access_token = access_token

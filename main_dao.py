@@ -171,7 +171,7 @@ class MainDAO():
 		activities = []
 		sql = "SELECT id, athlete_id, athlete_firstname, athlete_lastname, \
 				title, description, start_date, start_date_local, type, \
-				distance, distance_unit, moving_time, elapsed_time FROM ACTIVITIES"
+				distance, distance_unit, moving_time, elapsed_time FROM ACTIVITIES ORDER_BY id desc"
 		try:
 			# Execute the SQL command
 			cursor.execute(sql)
@@ -185,8 +185,8 @@ class MainDAO():
 				activity['athlete_lastname'] = row[3]
 				activity['title'] = row[4]
 				activity['description'] = row[5]
-				activity['start_date'] = row[6]
-				activity['start_date_local'] = row[7]
+				activity['start_date'] = row[6].strftime("%Y-%B-%d")
+				activity['start_date_local'] = row[7].strftime("%Y-%B-%d")
 				activity['type'] = row[8]
 				activity['distance'] = round(float(row[9])/1000, 2)
 				activity['distance_unit'] = row[10]
