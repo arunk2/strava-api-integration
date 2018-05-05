@@ -47,6 +47,7 @@ def get_activities():
 
 
 def dump_activities():
+	dao = MainDAO()
 	result = dao.get_athletes()
 	for athlete in result:
 		access_token = athlete['access_token']
@@ -105,6 +106,8 @@ def pull_activities(access_token, from_time = "2018-01-01T00:00:00Z"):
 def process_activity(activity):
 	act = extract_activity(activity)
 	print(act)
+	dao = MainDAO()
+	dao.add_activity(act)
 
 
 def extract_activity(activity):
