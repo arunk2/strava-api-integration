@@ -192,7 +192,7 @@ class MainDAO():
 				activity['distance_unit'] = row[10]
 				activity['moving_time'] = row[11]
 				activity['elapsed_time'] = row[12]
-				athletes.append(activity)
+				activities.append(activity)
 
 		except:
 			print("Error: unable to fecth data")
