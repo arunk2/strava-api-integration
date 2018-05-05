@@ -43,7 +43,7 @@ def get_athletes():
 def get_activities():
 	dao = MainDAO()
 	result = dao.get_activities()
-	return jsonify({"status": "success", "athletes": result})
+	return jsonify({"status": "success", "activities": result})
 
 
 def dump_activities():

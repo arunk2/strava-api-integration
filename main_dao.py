@@ -188,7 +188,7 @@ class MainDAO():
 				activity['start_date'] = row[6]
 				activity['start_date_local'] = row[7]
 				activity['type'] = row[8]
-				activity['distance'] = row[9]
+				activity['distance'] = round(float(row[9])/1000, 2)
 				activity['distance_unit'] = row[10]
 				activity['moving_time'] = row[11]
 				activity['elapsed_time'] = row[12]
