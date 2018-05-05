@@ -115,12 +115,12 @@ def extract_activity(activity):
 		act = {}
 		act['id'] = activity.id
 		act['athlete_id'] = activity.athlete.id
-		act['athlete_fname'] = activity.athlete.firstname
-		act['athlete_lname'] = activity.athlete.lastname
-		act['name'] = activity.name
+		act['athlete_firstname'] = activity.athlete.firstname
+		act['athlete_lastname'] = activity.athlete.lastname
+		act['title'] = activity.name
 		act['description'] = activity.description
 		act['type'] = activity.type
-		act['distance_num'] = activity.distance.get_num()
+		act['distance'] = activity.distance.get_num()
 		act['distance_unit'] = activity.distance.get_unit().get_specifier()
 		act['moving_time'] = round(activity.moving_time.total_seconds()/60.0)
 		act['elapsed_time'] = round(activity.elapsed_time.total_seconds()/60.0)

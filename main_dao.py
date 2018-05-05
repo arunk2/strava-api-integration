@@ -199,4 +199,5 @@ class MainDAO():
 
 		# disconnect from server
 		db.close()
+		return activities
 
