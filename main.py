@@ -47,7 +47,10 @@ def get_activities():
 
 
 def dump_activities():
-	# pull_activities(access_token, from_time)
+	result = dao.get_athletes()
+	for athlete in result:
+		access_token = athlete['access_token']
+		pull_activities(access_token)
 	return jsonify({"status": "success"})
 
 
@@ -69,7 +72,7 @@ def add_athlete(access_token):
 	print(ath)
 	dao = MainDAO()
 	dao.add_athlete(ath)
-	# get_activities(access_token)
+	pull_activities(access_token)
 	return True
 
 
@@ -133,6 +136,14 @@ def extract_activity(activity):
 	except Exception as excep:
 		print(excep)
 	return act
+
+
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
 
 
 app.add_url_rule(rule='/health', endpoint='health-check', view_func=health_check, methods=['GET'])
