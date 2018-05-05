@@ -51,7 +51,7 @@ def dump_activities():
 	result = dao.get_athletes()
 	for athlete in result:
 		access_token = athlete['access_token']
-		pull_activities(access_token, athlete['firstname'], athlete['lastname'])
+		pull_activities(access_token, athlete['firstname'], athlete['lastname'], today.strftime("%Y-%B-%d")+'T00:00:00Z')
 	return jsonify({"status": "success"})
 
 
@@ -75,7 +75,7 @@ def add_athlete(access_token):
 	dao.add_athlete(ath)
 	from datetime import datetime
 	today = datetime.now()
-	pull_activities(access_token, ath['firstname'], ath['lastname'], today.strftime("%Y-%B-%d")+'T00:00:00Z')
+	pull_activities(access_token, ath['firstname'], ath['lastname'])
 	return True
 
 
@@ -100,7 +100,7 @@ def pull_activities(access_token, firstname, lastname, from_time = "2018-01-01T0
 	client = Client()
 	client.access_token = access_token
 	for activity in client.get_activities(after = from_time,  limit=500):
-		process_activity(activity)
+		process_activity(activity, firstname, lastname)
 		
 	return True
 
