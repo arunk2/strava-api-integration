@@ -49,9 +49,13 @@ def get_activities():
 def dump_activities():
 	dao = MainDAO()
 	result = dao.get_athletes()
+	from datetime import datetime
+	today = datetime.now()
+	from_date = today.strftime("%Y-%m-%d")
+	from_date += 'T00:00:00Z'
 	for athlete in result:
 		access_token = athlete['access_token']
-		pull_activities(access_token, athlete['firstname'], athlete['lastname'], today.strftime("%Y-%B-%d")+'T00:00:00Z')
+		pull_activities(access_token, athlete['firstname'], athlete['lastname'], from_date)
 	return jsonify({"status": "success"})
 
 
@@ -73,8 +77,6 @@ def add_athlete(access_token):
 	print(ath)
 	dao = MainDAO()
 	dao.add_athlete(ath)
-	from datetime import datetime
-	today = datetime.now()
 	pull_activities(access_token, ath['firstname'], ath['lastname'])
 	return True
 
