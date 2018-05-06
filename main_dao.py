@@ -135,7 +135,7 @@ class MainDAO():
 		cursor = db.cursor()
 		
 		athletes = []
-		sql = "SELECT DISTINCT id, firstname, lastname, sex, email, profile, username, access_token FROM ATHLETE"
+		sql = "SELECT DISTINCT id, firstname, lastname, sex, email, profile, username, access_token FROM ATHLETE ORDER BY firstname"
 		try:
 			# Execute the SQL command
 			cursor.execute(sql)
@@ -194,11 +194,10 @@ class MainDAO():
 				activity['elapsed_time'] = row[12]
 				activities.append(activity)
 
-		except Exception as execption:
-			print(execption)
+		except Exception as exception:
+			print(exception)
 			print("Error: unable to fecth data")
 
 		# disconnect from server
 		db.close()
 		return activities
-

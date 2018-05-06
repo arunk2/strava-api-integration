@@ -1,5 +1,4 @@
-from stravalib.client import Client
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
 import json
 import CONSTANTS
 from main_dao import MainDAO
@@ -31,7 +30,8 @@ def authorized_callback():
 	# Now store that access token along with athlete details
 	print(access_token)
 	add_athlete(access_token)
-	return jsonify({"status": "success"})
+	#return jsonify({"status": "success"})
+	return redirect("http://34.211.61.161:3000/", code=302)
 
 
 def get_athletes():
@@ -53,6 +53,7 @@ def dump_activities():
 	today = datetime.now()
 	from_date = today.strftime("%Y-%m-%d")
 	from_date += 'T00:00:00Z'
+	print(from_date)
 	for athlete in result:
 		access_token = athlete['access_token']
 		pull_activities(access_token, athlete['firstname'], athlete['lastname'], from_date)
