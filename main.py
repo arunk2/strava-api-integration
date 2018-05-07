@@ -1,3 +1,4 @@
+from stravalib.client import Client
 from flask import Flask, jsonify, request, redirect
 import json
 import CONSTANTS
@@ -37,6 +38,10 @@ def authorized_callback():
 def get_athletes():
 	dao = MainDAO()
 	result = dao.get_athletes()
+	for athlete in result:
+		athlete['access_token'] = ''
+		athlete['email'] = ''
+		athlete['username'] = ''
 	return jsonify({"status": "success", "athletes": result})
 
 
