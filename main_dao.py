@@ -24,7 +24,7 @@ class MainDAO():
 
 			# Create table as per requirement
 			sql = """CREATE TABLE ATHLETE (
-						id INT(11) NOT NULL,
+						id INT(11) NOT NULL PRIMARY KEY,
 						firstname  VARCHAR(50),
 						lastname  VARCHAR(50),
 						sex CHAR(1),
@@ -38,7 +38,7 @@ class MainDAO():
 			cursor.execute("DROP TABLE IF EXISTS ACTIVITIES")
 
 			sql = """CREATE TABLE ACTIVITIES (
-						id INT(11) NOT NULL,
+						id INT(11) NOT NULL PRIMARY KEY,
 						athlete_id  INT(11),
 						athlete_firstname VARCHAR(50),
 						athlete_lastname  VARCHAR(50),
@@ -83,9 +83,9 @@ class MainDAO():
 			cursor.execute(sql)
 			# Commit your changes in the database
 			db.commit()
-		except:
-		   # Rollback in case there is any error
-		   db.rollback()
+		except Exception as exception:
+			print(exception)
+			db.rollback()
 
 		# disconnect from server
 		db.close()
@@ -118,9 +118,9 @@ class MainDAO():
 			print(res)
 			# Commit your changes in the database
 			db.commit()
-		except:
-		   # Rollback in case there is any error
-		   db.rollback()
+		except Exception as exception:
+			print(exception)
+			db.rollback()
 
 		# disconnect from server
 		db.close()
