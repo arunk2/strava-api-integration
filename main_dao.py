@@ -79,7 +79,6 @@ class MainDAO():
 										email=user['email'], profile=user['profile'],
 										username=user['username'], access_token=user['access_token'])
 
-			print(sql)
 
 			cursor.execute(sql)
 			# Commit your changes in the database
@@ -113,9 +112,10 @@ class MainDAO():
 										type=activity['type'], distance=activity['distance'], distance_unit=activity['distance_unit'],
 										moving_time=activity['moving_time'], elapsed_time=activity['elapsed_time'])
 
-			print(sql)
 
-			cursor.execute(sql)
+			print(sql)
+			res = cursor.execute(sql)
+			print(res)
 			# Commit your changes in the database
 			db.commit()
 		except:
@@ -153,7 +153,8 @@ class MainDAO():
 				athlete['access_token'] = row[7]
 				athletes.append(athlete)
 
-		except:
+		except Exception as exception:
+			print(exception)
 			print("Error: unable to fecth data")
 
 		# disconnect from server
@@ -161,7 +162,7 @@ class MainDAO():
 		return athletes
 
 
-	def get_activities(self):
+	def get_activities(self, from_date="2018-05-01"):
 		# Open database connection
 		db = MySQLdb.connect(self.host, self.user, self.password, self.database)
 
@@ -171,7 +172,9 @@ class MainDAO():
 		activities = []
 		sql = "SELECT DISTINCT id, athlete_id, athlete_firstname, athlete_lastname, \
 				title, description, start_date, start_date_local, type, \
-				distance, distance_unit, moving_time, elapsed_time FROM ACTIVITIES ORDER BY id DESC"
+				distance, distance_unit, moving_time, elapsed_time \
+				FROM ACTIVITIES \
+				WHERE start_date_local > '"+from_date+"' ORDER BY start_date_local DESC"
 		try:
 			# Execute the SQL command
 			cursor.execute(sql)
@@ -192,6 +195,8 @@ class MainDAO():
 				activity['distance_unit'] = row[10]
 				activity['moving_time'] = row[11]
 				activity['elapsed_time'] = row[12]
+				if activity['title'][0] == 'b':
+					activity['title'] = activity['title'][1:]
 				activities.append(activity)
 
 		except Exception as exception:

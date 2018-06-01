@@ -1,3 +1,4 @@
+from stravalib.client import Client
 from flask import Flask, jsonify, request, redirect
 import json
 import CONSTANTS
@@ -28,7 +29,6 @@ def authorized_callback():
 												client_secret=CONSTANTS.CLIENT_SECRET, 
 												code=code)
 	# Now store that access token along with athlete details
-	print(access_token)
 	add_athlete(access_token)
 	#return jsonify({"status": "success"})
 	return redirect("http://34.211.61.161:3000/", code=302)
@@ -37,20 +37,27 @@ def authorized_callback():
 def get_athletes():
 	dao = MainDAO()
 	result = dao.get_athletes()
+	for athlete in result:
+		athlete['access_token'] = ''
+		athlete['email'] = ''
+		athlete['username'] = ''
 	return jsonify({"status": "success", "athletes": result})
 
 
 def get_activities():
 	dao = MainDAO()
-	result = dao.get_activities()
+	from datetime import datetime, timedelta
+	today = datetime.now() - timedelta(days=30)
+	from_date = today.strftime("%Y-%m-%d")
+	result = dao.get_activities(from_date)
 	return jsonify({"status": "success", "activities": result})
 
 
 def dump_activities():
 	dao = MainDAO()
 	result = dao.get_athletes()
-	from datetime import datetime
-	today = datetime.now()
+	from datetime import datetime, timedelta
+	today = datetime.now() - timedelta(days=1)
 	from_date = today.strftime("%Y-%m-%d")
 	from_date += 'T00:00:00Z'
 	print(from_date)
@@ -75,7 +82,6 @@ def add_athlete(access_token):
 	athlete = client.get_athlete()
 	ath = extract_athlete(athlete)
 	ath['access_token'] = access_token
-	print(ath)
 	dao = MainDAO()
 	dao.add_athlete(ath)
 	pull_activities(access_token, ath['firstname'], ath['lastname'])
@@ -112,7 +118,6 @@ def process_activity(activity, firstname, lastname):
 	act = extract_activity(activity)
 	act['athlete_firstname'] = firstname
 	act['athlete_lastname'] = lastname
-	print(act)
 	dao = MainDAO()
 	dao.add_activity(act)
 
@@ -124,7 +129,7 @@ def extract_activity(activity):
 		act['athlete_id'] = activity.athlete.id
 		act['athlete_firstname'] = activity.athlete.firstname
 		act['athlete_lastname'] = activity.athlete.lastname
-		act['title'] = activity.name
+		act['title'] = str(activity.name.encode('ascii', 'ignore')).replace("'", "")
 		act['description'] = activity.description
 		act['type'] = activity.type
 		act['distance'] = activity.distance.get_num()
