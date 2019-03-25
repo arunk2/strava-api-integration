@@ -79,7 +79,6 @@ class MainDAO():
 										email=user['email'], profile=user['profile'],
 										username=user['username'], access_token=user['access_token'])
 
-			print(sql)
 
 			cursor.execute(sql)
 			# Commit your changes in the database
@@ -100,22 +99,23 @@ class MainDAO():
 			# prepare a cursor object using cursor() method
 			cursor = db.cursor()
 
-			sql = """INSERT INTO ACTIVITIES (id, athlete_id, athlete_firstname, athlete_lastname, 
-							title, description, start_date, start_date_local, type, distance, 
+			sql = """INSERT INTO ACTIVITIES (id, athlete_id, athlete_firstname, athlete_lastname,
+							title, description, start_date, start_date_local, type, distance,
 							distance_unit, moving_time, elapsed_time)
-							VALUES ({id}, {athlete_id}, '{athlete_firstname}', '{athlete_lastname}', 
-							'{title}', '{description}', '{start_date}', '{start_date_local}', '{type}', 
-							'{distance}', '{distance_unit}', '{moving_time}', 
-							'{elapsed_time}')""".format(id=activity['id'], athlete_id=activity['athlete_id'],
-										athlete_firstname=activity['athlete_firstname'], athlete_lastname=activity['athlete_lastname'],
-										title=activity['title'], description=activity['description'],
-										start_date=activity['start_date'], start_date_local=activity['start_date_local'],
-										type=activity['type'], distance=activity['distance'], distance_unit=activity['distance_unit'],
-										moving_time=activity['moving_time'], elapsed_time=activity['elapsed_time'])
+							VALUES ({id}, {athlete_id}, '{athlete_firstname}', '{athlete_lastname}',
+							'{title}', '{description}', '{start_date}', '{start_date_local}', '{type}',
+							'{distance}', '{distance_unit}', '{moving_time}',
+							'{elapsed_time}')""".format(id=activity['id'], athlete_id=activity.get('athlete_id',''),
+										athlete_firstname=activity.get('athlete_firstname'), athlete_lastname=activity.get('athlete_lastname'),
+										title=activity.get('title'), description=activity.get('description'),
+										start_date=activity.get('start_date'), start_date_local=activity.get('start_date_local'),
+										type=activity.get('type'), distance=activity.get('distance'), distance_unit=activity.get('distance_unit'),
+										moving_time=activity.get('moving_time'), elapsed_time=activity.get('elapsed_time'))
+
 
 			print(sql)
-
-			cursor.execute(sql)
+			res = cursor.execute(sql)
+			print(res)
 			# Commit your changes in the database
 			db.commit()
 		except Exception as exception:
@@ -133,7 +133,7 @@ class MainDAO():
 
 		# prepare a cursor object using cursor() method
 		cursor = db.cursor()
-		
+
 		athletes = []
 		sql = "SELECT DISTINCT id, firstname, lastname, sex, email, profile, username, access_token FROM ATHLETE ORDER BY firstname"
 		try:
@@ -162,17 +162,19 @@ class MainDAO():
 		return athletes
 
 
-	def get_activities(self):
+	def get_activities(self, from_date="2018-05-01"):
 		# Open database connection
 		db = MySQLdb.connect(self.host, self.user, self.password, self.database)
 
 		# prepare a cursor object using cursor() method
 		cursor = db.cursor()
-		
+
 		activities = []
 		sql = "SELECT DISTINCT id, athlete_id, athlete_firstname, athlete_lastname, \
 				title, description, start_date, start_date_local, type, \
-				distance, distance_unit, moving_time, elapsed_time FROM ACTIVITIES ORDER BY id DESC"
+				distance, distance_unit, moving_time, elapsed_time \
+				FROM ACTIVITIES \
+				WHERE start_date_local > '"+from_date+"' ORDER BY start_date_local DESC"
 		try:
 			# Execute the SQL command
 			cursor.execute(sql)
@@ -193,6 +195,8 @@ class MainDAO():
 				activity['distance_unit'] = row[10]
 				activity['moving_time'] = row[11]
 				activity['elapsed_time'] = row[12]
+				if activity['title'][0] == 'b':
+					activity['title'] = activity['title'][1:]
 				activities.append(activity)
 
 		except Exception as exception:

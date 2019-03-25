@@ -14,9 +14,9 @@ def health_check():
 
 def login():
 	client = Client()
-	authorize_url = client.authorization_url(client_id=CONSTANTS.CLIENT_ID, 
+	authorize_url = client.authorization_url(client_id=CONSTANTS.CLIENT_ID,
 											redirect_uri=CONSTANTS.CALLBACK_URL)
-	# Have the user click the authorization URL, 
+	# Have the user click the authorization URL,
 	# a 'code' param will be added to the redirect_uris
 	return jsonify({"status": "success", "url": authorize_url})
 
@@ -25,11 +25,10 @@ def authorized_callback():
 	client = Client()
 	# Extract the code from your webapp response
 	code = request.args.get('code')
-	access_token = client.exchange_code_for_token(client_id=CONSTANTS.CLIENT_ID, 
-												client_secret=CONSTANTS.CLIENT_SECRET, 
+	access_token = client.exchange_code_for_token(client_id=CONSTANTS.CLIENT_ID,
+												client_secret=CONSTANTS.CLIENT_SECRET,
 												code=code)
 	# Now store that access token along with athlete details
-	print(access_token)
 	add_athlete(access_token)
 	#return jsonify({"status": "success"})
 	return redirect("http://34.211.61.161:3000/", code=302)
@@ -47,15 +46,18 @@ def get_athletes():
 
 def get_activities():
 	dao = MainDAO()
-	result = dao.get_activities()
+	from datetime import datetime, timedelta
+	today = datetime.now() - timedelta(days=45)
+	from_date = today.strftime("%Y-%m-%d")
+	result = dao.get_activities(from_date)
 	return jsonify({"status": "success", "activities": result})
 
 
 def dump_activities():
 	dao = MainDAO()
 	result = dao.get_athletes()
-	from datetime import datetime
-	today = datetime.now()
+	from datetime import datetime, timedelta
+	today = datetime.now() - timedelta(days=30)
 	from_date = today.strftime("%Y-%m-%d")
 	from_date += 'T00:00:00Z'
 	print(from_date)
@@ -72,7 +74,7 @@ def create_db():
 
 
 def add_athlete(access_token):
-	# An authorized callback is coming. Process it and add 
+	# An authorized callback is coming. Process it and add
 	client = Client()
 
 	# Now store that access token along with athlete details
@@ -80,7 +82,6 @@ def add_athlete(access_token):
 	athlete = client.get_athlete()
 	ath = extract_athlete(athlete)
 	ath['access_token'] = access_token
-	print(ath)
 	dao = MainDAO()
 	dao.add_athlete(ath)
 	pull_activities(access_token, ath['firstname'], ath['lastname'])
@@ -92,7 +93,7 @@ def extract_athlete(athlete):
 	try:
 		ath['id'] = athlete.id
 		ath['firstname'] = athlete.firstname
-		ath['lastname'] = athlete.lastname
+		ath['lastname'] = athlete.lastname if athlete.lastname else ""
 		ath['sex'] = athlete.sex
 		ath['email'] = athlete.email
 		ath['profile'] = athlete.profile
@@ -104,12 +105,12 @@ def extract_athlete(athlete):
 
 
 def pull_activities(access_token, firstname, lastname, from_time = "2018-01-01T00:00:00Z"):
-	# An authorized callback is coming. Process it and add 
+	# An authorized callback is coming. Process it and add
 	client = Client()
 	client.access_token = access_token
 	for activity in client.get_activities(after = from_time,  limit=500):
 		process_activity(activity, firstname, lastname)
-		
+
 	return True
 
 
@@ -117,7 +118,6 @@ def process_activity(activity, firstname, lastname):
 	act = extract_activity(activity)
 	act['athlete_firstname'] = firstname
 	act['athlete_lastname'] = lastname
-	print(act)
 	dao = MainDAO()
 	dao.add_activity(act)
 
@@ -129,7 +129,7 @@ def extract_activity(activity):
 		act['athlete_id'] = activity.athlete.id
 		act['athlete_firstname'] = activity.athlete.firstname
 		act['athlete_lastname'] = activity.athlete.lastname
-		act['title'] = activity.name
+		act['title'] = str(activity.name.encode('ascii', 'ignore')).replace("'", "")
 		act['description'] = activity.description
 		act['type'] = activity.type
 		act['distance'] = activity.distance.get_num()
@@ -141,7 +141,7 @@ def extract_activity(activity):
 
 		# act['location_city'] = activity.location_city
 		# act['location_country'] = activity.location_country
-		# act['location_state'] = activity.location_state	
+		# act['location_state'] = activity.location_state
 		# act['start_date'] = activity.start_date
 		# act['start_date_local'] = activity.start_date_local
 		# act['start_latitude'] = activity.start_latitude
