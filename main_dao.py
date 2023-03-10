@@ -231,6 +231,10 @@ class MainDAO():
 				activity['start_date_local'] = row[7].strftime("%Y-%B-%d")
 				activity['type'] = row[8]
 				activity['distance'] = row[9]
+				if "meter" in row[9]: #Split and convert to KM
+					dist = row[9].split()
+					activity['distance'] = str(round(float(dist[0]) / 1000.0, 2))
+					activity['distance'] += " km"
 				activity['distance_unit'] = row[10]
 				activity['moving_time'] = row[11]
 				activity['elapsed_time'] = row[12]
